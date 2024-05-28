@@ -22,4 +22,5 @@ Similar scheme in [CAFRI-Rice](https://cafri-rice.khu.ac.kr/)
 
 ## Dependencies
 
-- SeqIO: for reading fasta files
+- Bio: for reading fasta files through SeqIO
+- csv: for reading 

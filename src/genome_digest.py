@@ -14,7 +14,6 @@ ALL_PROTEIN_FILE = 'data_genome/all_protein.fasta'
 ALL_GENE_FILE = 'data_genome/all_gene.fasta'
 ALL_CDS_FILE = 'data_genome/all_cds.fasta'
 ALL_PROMOTER_FILE = 'data_genome/all_promoter.fasta'
-ALL_PROMOTER_GENE_FILE = 'data_genome/all_promoter+gene.fasta'
 
 DATA_GENOME = 'data_genome/'
 
@@ -72,9 +71,6 @@ def check_existing_genome_digest():
     if not os.path.isfile(ALL_PROMOTER_FILE):
         is_good = False
         logging.info('all_promoter.fasta file not exists in data_genome')
-    if not os.path.isfile(ALL_PROMOTER_GENE_FILE):
-        is_good = False
-        logging.info('all_promoter+gene.fasta file not exists in data_genome')
 
     return is_good
 
@@ -91,7 +87,7 @@ def get_sequence(seq: str, strand: str):
     return seq
 
 
-def write_genome_digest():
+def try_genome_digest():
     file_genome = ''
     file_annotation = ''
 
@@ -118,6 +114,12 @@ def write_genome_digest():
     now, start making files
     '''
 
+    do_genome_digest(file_genome, file_annotation)
+    return True
+
+
+def do_genome_digest(file_genome, file_annotation):
+
     annotation_reader = csv.reader(open(file_annotation, 'r'), delimiter='\t')
     genome = read_fasta(file_genome)
 
@@ -125,7 +127,6 @@ def write_genome_digest():
     dict_cds = dict()
     dict_protein = dict()
     dict_promoter = dict()
-    dict_promoter_gene = dict()
 
     for row in annotation_reader:
         if row[0][0] == '#' or len(row) < 9:
@@ -151,11 +152,10 @@ def write_genome_digest():
         if seq_type == 'gene':
             dict_gene[name] = sequence
             if strand == '+':
-                promoter = get_sequence(genome[seq_id][max(0, start-2000):start], strand=strand)
+                promoter = get_sequence(genome[seq_id][max(0, start-PROMOTER_LENGTH):start], strand=strand)
             else:
-                promoter = get_sequence(genome[seq_id][end:min(end+2000, len(genome[seq_id]))], strand=strand)
+                promoter = get_sequence(genome[seq_id][end:min(end+PROMOTER_LENGTH, len(genome[seq_id]))], strand=strand)
             dict_promoter[name] = promoter
-            dict_promoter_gene[name] = promoter + sequence
 
         if seq_type == 'CDS':
             if name not in dict_cds.keys():
@@ -172,6 +172,4 @@ def write_genome_digest():
     write_fasta(ALL_GENE_FILE, dict_gene)
     write_fasta(ALL_CDS_FILE, dict_cds)
     write_fasta(ALL_PROMOTER_FILE, dict_promoter)
-    write_fasta(ALL_PROMOTER_GENE_FILE, dict_promoter_gene)
 
-    return True

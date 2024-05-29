@@ -212,14 +212,20 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
 
     sorted_protein_list = [protein for protein in sorted_protein_list if protein.distance < MAX_DIST]
 
-    compared_protein_dict = {f"{protein.name} {protein.metadata}": protein.seq for protein in sorted_protein_list}
-    compared_gene_dict = {f"{protein.name} {protein.metadata}": protein.gene_seq for protein in sorted_protein_list}
-    compared_cds_dict = {f"{protein.name} {protein.metadata}": protein.cds_seq for protein in sorted_protein_list}
-    compared_promoter_dict = {f"{protein.name} {protein.metadata}": protein.promoter_seq for protein in sorted_protein_list}
-    compared_promoter_gene_dict = {f"{protein.name} {protein.metadata}": protein.promoter_seq + protein.gene_seq
+    compared_protein_dict = {f"{protein.name} {protein.metadata} ({protein.distance:.6f})": protein.seq
+                             for protein in sorted_protein_list}
+    compared_gene_dict = {f"{protein.name} {protein.metadata} ({protein.distance:.6f})": protein.gene_seq
+                          for protein in sorted_protein_list}
+    compared_cds_dict = {f"{protein.name} {protein.metadata} ({protein.distance:.6f})": protein.cds_seq
+                         for protein in sorted_protein_list}
+    compared_promoter_dict = {f"{protein.name} {protein.metadata} ({protein.distance:.6f})": protein.promoter_seq
+                              for protein in sorted_protein_list}
+    compared_promoter_gene_dict = {f"{protein.name} {protein.metadata} ({protein.distance:.6f})": protein.promoter_seq + protein.gene_seq
                                    for protein in sorted_protein_list}
 
-    write_fasta(FILE_FOR_MULTIPLE_ALIGN, compared_protein_dict)
+    compared_protein_for_multiple_align_dict = {protein.get_best_name(): protein.seq for protein in sorted_protein_list}
+
+    write_fasta(FILE_FOR_MULTIPLE_ALIGN, compared_protein_for_multiple_align_dict)
     write_fasta(COMPARED_PROTEIN_FILE, compared_protein_dict)
     write_fasta(COMPARED_GENE_FILE, compared_gene_dict)
     write_fasta(COMPARED_CDS_FILE, compared_cds_dict)

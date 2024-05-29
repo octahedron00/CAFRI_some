@@ -98,7 +98,7 @@ def try_genome_digest():
             file_annotation = DATA_GENOME + file
         elif (file.find('md') > -1) or (file.find('all_') > -1):
             continue
-        elif file.find('fa') > -1:
+        elif file.find('fa') > -1 or file.find('fna') > -1:
             file_genome = DATA_GENOME + file
 
     if len(file_genome) < 1:

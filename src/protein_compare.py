@@ -4,14 +4,14 @@ import os
 
 from Bio.Align import PairwiseAligner, substitution_matrices
 
-MAX_DIST = 0.9
+MAX_DIST = 0.5
 
-COMPARED_PROTEIN_FILE = "compared_protein.fasta"
-COMPARED_GENE_FILE = "compared_gene.fasta"
-COMPARED_CDS_FILE = "compared_cds.fasta"
-COMPARED_PROMOTER_FILE = "compared_promoter.fasta"
-COMPARED_PROMOTER_GENE_FILE = "compared_promoter+gene.fasta"
-FILE_FOR_MULTIPLE_ALIGN = "temp/compared_protein.fasta"
+COMPARED_PROTEIN_FILE = "result/compared_protein.fasta"
+COMPARED_GENE_FILE = "result/compared_gene.fasta"
+COMPARED_CDS_FILE = "result/compared_cds.fasta"
+COMPARED_PROMOTER_FILE = "result/compared_promoter.fasta"
+COMPARED_PROMOTER_GENE_FILE = "result/compared_promoter+gene.fasta"
+FILE_FOR_MULTIPLE_ALIGN = "temp/_align.fasta"
 
 
 def write_fasta(file_name: str, seq_map: dict):
@@ -19,6 +19,7 @@ def write_fasta(file_name: str, seq_map: dict):
     with open(file_name, 'w') as file:
         for key, item in seq_map.items():
             file.write(f">{key}\n{item}\n")
+
 
 class Protein:
     name = ""
@@ -101,6 +102,7 @@ def get_query_protein_list(target_name_list: list[str], all_protein_dict: dict, 
                 query_protein_list.append(protein)
 
     for key in query_protein_dict.keys():
+        print(key)
         ext_protein = Protein(key=key, seq=query_protein_dict[key])
         query_protein_list.append(ext_protein)
 
@@ -211,6 +213,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
     sorted_protein_list = sorted(total_protein_list)
 
     sorted_protein_list = [protein for protein in sorted_protein_list if protein.distance < MAX_DIST]
+    sorted_protein_list = sorted_protein_list[:min(len(sorted_protein_list), 100)]
 
     compared_protein_dict = {f"{protein.name} {protein.metadata} ({protein.distance:.6f})": protein.seq
                              for protein in sorted_protein_list}

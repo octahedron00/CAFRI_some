@@ -28,9 +28,9 @@ library(viridis)
 
 source("src\\R_script\\gheatmap_custom.R")
 
-tree_file <- "var\\_tree.dnd"
-df_file <- "var\\_df.csv"
-md_file <- "var\\_md.csv"
+tree_file <- "temp\\_tree.dnd"
+df_file <- "temp\\_df.csv"
+md_file <- "temp\\_md.csv"
 
 
 COL_W = 0.7
@@ -56,7 +56,9 @@ tree <- read.tree(tree_file)
 df <- read.csv(df_file)
 length_text = max(nchar(df$Gene)) + 1
 rownames(df) <- df$Gene
+print(df)
 df <- df[, -1]
+print(df)
 
 df[is.na(df)] <- 0
 

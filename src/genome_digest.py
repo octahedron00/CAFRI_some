@@ -173,3 +173,9 @@ def do_genome_digest(file_genome, file_annotation):
     write_fasta(ALL_CDS_FILE, dict_cds)
     write_fasta(ALL_PROMOTER_FILE, dict_promoter)
 
+    with open(DATA_GENOME + "digest_from_" + file_genome[:max(file_genome.find(".fa"), file_genome.find(".fna"))] + ".md") as file:
+        file.write(f"""
+            digest from {file_genome}
+            Delete all 'all_~~.fasta' files when you want to put new genome in this program.
+            """)
+

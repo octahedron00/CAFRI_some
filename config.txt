@@ -6,7 +6,7 @@
     "gene_query": [],
 
     "gene_add_explanation": "Genes in the genome to add in the heatmap and tree",
-    "gene_add": [],
+    "gene_add": ["Vp6G20430"],
 
     "gene_ignore_explanation": "Genes in the genome to ignore by making the heatmap and tree",
     "gene_ignore": [],

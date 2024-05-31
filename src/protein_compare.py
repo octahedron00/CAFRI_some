@@ -10,6 +10,7 @@ COMPARED_GENE_FILE = "result/compared_gene.fasta"
 COMPARED_CDS_FILE = "result/compared_cds.fasta"
 COMPARED_PROMOTER_FILE = "result/compared_promoter.fasta"
 COMPARED_PROMOTER_GENE_FILE = "result/compared_promoter+gene.fasta"
+COMPARED_RESULT_FILE = "result/compared_result.fasta"
 FILE_FOR_MULTIPLE_ALIGN = "temp/_align.fasta"
 
 
@@ -40,7 +41,7 @@ class Protein:
     def __init__(self, key: str, seq: str, is_external=False):
 
         self.name = key
-        self.seq = seq
+        self.seq = seq.upper().replace('B', '').replace('J', '').replace('O', '').replace('U', '').replace('X', '').replace('Y', '').replace('Z', '')
         self.gene_seq = ""
         self.cds_seq = ""
         self.promoter_seq = ""
@@ -95,7 +96,7 @@ def get_query_protein_list(target_name_list: list[str], all_protein_dict: dict, 
 
     for key in all_protein_dict.keys():
         for target_name in target_name_list:
-            if target_name.find('.') > -1 and key == target_name:                
+            if target_name.find('.') > -1 and key == target_name:
                 protein = Protein(key=key, seq=all_protein_dict[key])
                 query_protein_list.append(protein)
             elif key[:key.find('.')] == target_name:
@@ -176,6 +177,7 @@ def get_aligned_score(aligner: PairwiseAligner, matrix, query_protein: Protein, 
             score += matrix[s, s]
         return score
 
+    # print(query_protein.seq, target_protein.seq)
     alignments = aligner.align(query_protein.seq, target_protein.seq)
 
     alignment = alignments[0]
@@ -257,7 +259,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
 
         total_protein_list[i] = total_protein
         time_now = datetime.datetime.now()
-        print(f"\r{i + 1}/{len(total_protein_list)} : {total_protein.align_score} "
+        print(f"\r{i + 1}/{len(total_protein_list)} : {total_protein.distance:.03f} "
               f"({time_now - time_start} passed / {((time_now - time_start) / (i + 1)) * (len(total_protein_list) - i - 1)} left)",
               end="")
 
@@ -276,6 +278,8 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
                               for protein in sorted_protein_list}
     compared_promoter_gene_dict = {f"{protein.name} {protein.metadata} ({protein.distance:.6f})": protein.promoter_seq + protein.gene_seq
                                    for protein in sorted_protein_list}
+    compared_result_dict = {f"{protein.name} {protein.metadata} ({protein.distance:.6f}) with {protein.align_with}":
+                            protein.align_result for protein in sorted_protein_list}
 
     compared_protein_for_multiple_align_dict = {protein.get_best_name(): protein.seq for protein in sorted_protein_list}
 
@@ -285,5 +289,6 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
     write_fasta(COMPARED_CDS_FILE, compared_cds_dict)
     write_fasta(COMPARED_PROMOTER_FILE, compared_promoter_dict)
     write_fasta(COMPARED_PROMOTER_GENE_FILE, compared_promoter_gene_dict)
+    write_fasta(COMPARED_RESULT_FILE, compared_result_dict)
 
     return sorted_protein_list

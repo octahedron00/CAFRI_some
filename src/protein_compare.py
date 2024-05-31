@@ -13,6 +13,8 @@ COMPARED_PROMOTER_GENE_FILE = "result/compared_promoter+gene.fasta"
 COMPARED_RESULT_FILE = "result/compared_result.fasta"
 FILE_FOR_MULTIPLE_ALIGN = "temp/_align.fasta"
 
+BLOSUM62 = "src/blosum62/blosum62.txt"
+
 
 def write_fasta(file_name: str, seq_map: dict):
 
@@ -120,7 +122,7 @@ def get_query_protein_list_with_distance(query_protein_list: list[Protein]):
     aligner.extend_gap_score = -4
     aligner.left_gap_score = 0
     aligner.right_gap_score = 0
-    matrix = substitution_matrices.load("BLOSUM62")
+    matrix = substitution_matrices.read(BLOSUM62)
 
     for protein_1 in query_protein_list:
         protein_1.set_distance(0)
@@ -182,7 +184,7 @@ def get_aligned_score(aligner: PairwiseAligner, matrix, query_protein: Protein, 
 
     alignment = alignments[0]
     match_line = "" # nottodo
-    alignment_str = f"{alignment[0]}\n{match_line}\n{alignment[1]}"
+    alignment_str = f"{alignment[0]}\n{alignment[1]}\n\n"
 
     return alignment.score, alignment_str
 
@@ -200,7 +202,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
     aligner.extend_gap_score = -4
     aligner.left_gap_score = 0
     aligner.right_gap_score = 0
-    matrix = substitution_matrices.load("BLOSUM62")
+    matrix = substitution_matrices.read(BLOSUM62)
 
     query_protein_names_list = [query_protein.name for query_protein in query_protein_list]
 
@@ -222,7 +224,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
             if j < 1 and total_protein.name in query_protein_names_list:
                 total_protein.set_metadata("origin")
                 total_protein.set_distance(0)
-                total_protein.set_align_result(total_protein.seq + "\n" + "" + "\n" + total_protein.seq + "\n",
+                total_protein.set_align_result(total_protein.seq + "\n" + total_protein.seq + "\n\n",
                                                score_max_gene, score_max_gene, total_protein.name)
                 break
 

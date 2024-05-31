@@ -6,7 +6,7 @@
     "gene_query": [],
 
     "gene_add_explanation": "Genes in the genome to add in the heatmap and tree",
-    "gene_add": ["Vp6G20430"],
+    "gene_add": [],
 
     "gene_ignore_explanation": "Genes in the genome to ignore by making the heatmap and tree",
     "gene_ignore": [],
@@ -15,10 +15,10 @@
     "columns_heatmap": [],
 
     "max_distance_explanation": "Distance threshold to count the 'similar' genes, 0 means only identical / 1 means all",
-    "max_distance": 0.9,
+    "max_distance": 0.95,
 
     "max_gene_amount_explanation": "Amount threshold of genes to show; more than 50 can make the software too slow in multiple alignment step",
-    "max_gene_amount": 50,
+    "max_gene_amount": 70,
 
     "End_of_file": true
 }

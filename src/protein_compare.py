@@ -16,6 +16,32 @@ FILE_FOR_MULTIPLE_ALIGN = "temp/_align.fasta"
 BLOSUM62 = "src/blosum62/blosum62.txt"
 
 GLOBAL_GAP_SCORE = -0.5209
+GAP_OPEN = -4
+GAP_EXTEND = -3
+
+AMINO_ACID_CORRELATION = {
+    'G': ['G', 'A', 'V', 'L', 'I', 'M'],
+    'A': ['G', 'A', 'V', 'L', 'I', 'M'],
+    'V': ['G', 'A', 'V', 'L', 'I', 'M'],
+    'L': ['G', 'A', 'V', 'L', 'I', 'M'],
+    'I': ['G', 'A', 'V', 'L', 'I', 'M'],
+    'M': ['G', 'A', 'V', 'L', 'I', 'M'],
+    'Y': ['Y', 'W', 'F'],
+    'W': ['Y', 'W', 'F'],
+    'F': ['Y', 'W', 'F'],
+    'C': ['C'],
+    'S': ['S', 'T', 'N', 'Q'],
+    'T': ['S', 'T', 'N', 'Q'],
+    'N': ['S', 'T', 'N', 'Q'],
+    'Q': ['S', 'T', 'N', 'Q'],
+    'P': ['P'],
+    'R': ['R', 'H', 'K'],
+    'H': ['R', 'H', 'K'],
+    'K': ['R', 'H', 'K'],
+    'D': ['D', 'E'],
+    'E': ['D', 'E'],
+    '*': []
+}
 
 
 def write_fasta(file_name: str, seq_map: dict):
@@ -45,7 +71,7 @@ class Protein:
     def __init__(self, key: str, seq: str, is_external=False):
 
         self.name = key
-        self.seq = seq.upper().replace('B', '').replace('J', '').replace('O', '').replace('U', '').replace('X', '').replace('Y', '').replace('Z', '')
+        self.seq = seq.upper()
         self.gene_seq = ""
         self.cds_seq = ""
         self.promoter_seq = ""
@@ -120,8 +146,8 @@ def get_query_protein_list_with_distance(query_protein_list: list[Protein], is_g
     query_protein_list_with_distance = []
 
     aligner = PairwiseAligner()
-    aligner.open_gap_score = -7
-    aligner.extend_gap_score = -4
+    aligner.open_gap_score = GAP_OPEN
+    aligner.extend_gap_score = GAP_EXTEND
     if is_global:
         aligner.left_gap_score = GLOBAL_GAP_SCORE
         aligner.right_gap_score = GLOBAL_GAP_SCORE
@@ -132,7 +158,7 @@ def get_query_protein_list_with_distance(query_protein_list: list[Protein], is_g
 
     for protein_1 in query_protein_list:
         protein_1.set_distance(0)
-        score_max = get_aligned_score(aligner, matrix, protein_1, protein_1, is_self=True)
+        score_max, _ = get_aligned_score_str(aligner, matrix, protein_1, protein_1, is_self=True)
         score_min = 0
 
         for protein_2 in query_protein_list:
@@ -143,7 +169,7 @@ def get_query_protein_list_with_distance(query_protein_list: list[Protein], is_g
                 score_min = GLOBAL_GAP_SCORE * max(len(protein_1), len(protein_2))
             else:
                 score_min = 0 * max(len(protein_1), len(protein_2))
-            score_alignment, _ = get_aligned_score(aligner, matrix, protein_1, protein_2)
+            score_alignment, _ = get_aligned_score_str(aligner, matrix, protein_1, protein_2)
             distance = 1 - (score_alignment - score_min) / (score_max - score_min)
 
             if distance > protein_1.distance:
@@ -179,7 +205,7 @@ def get_total_protein_list(all_protein_dict: dict, all_gene_dict: dict, all_cds_
     return total_protein_list
 
 
-def get_aligned_score(aligner: PairwiseAligner, matrix, query_protein: Protein, target_protein: Protein, is_self=False):
+def get_aligned_score_str(aligner: PairwiseAligner, matrix, query_protein: Protein, target_protein: Protein, is_self=False):
 
     aligner.substitution_matrix = matrix
 
@@ -187,16 +213,32 @@ def get_aligned_score(aligner: PairwiseAligner, matrix, query_protein: Protein, 
         score = 0
         for s in query_protein.seq:
             score += matrix[s, s]
-        return score
+        return score, query_protein.seq + "\n\n"
 
     # print(query_protein.seq, target_protein.seq)
     alignments = aligner.align(query_protein.seq, target_protein.seq)
 
     alignment = alignments[0]
     match_line = "" # nottodo
-    alignment_str = f"{alignment[0]}\n{alignment[1]}\n\n"
+    alignment_str = f"{alignment[0]}\n{get_alignment_str(matrix, alignment[0], alignment[1])}\n{alignment[1]}\n\n"
 
     return alignment.score, alignment_str
+
+
+def get_alignment_str(matrix, alignment_1: str, alignment_2: str):
+    result_list = []
+    for i in range(len(alignment_1)):
+        if '-' in (alignment_1[i], alignment_2[i]):
+            result_list.append(' ')
+        elif alignment_1[i] == alignment_2[i]:
+            result_list.append('|')
+        elif matrix[alignment_1[i], alignment_2[i]] > 0:
+            result_list.append(':')
+        elif alignment_1[i] in AMINO_ACID_CORRELATION[alignment_2[i]]:
+            result_list.append(':')
+        else:
+            result_list.append(' ')
+    return ''.join(result_list)
 
 
 def get_similar_protein_list(query_protein_list: list[Protein], total_protein_list: list[Protein],
@@ -208,8 +250,8 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
     time_start = datetime.datetime.now()
 
     aligner = PairwiseAligner()
-    aligner.open_gap_score = -7
-    aligner.extend_gap_score = -4
+    aligner.open_gap_score = GAP_OPEN
+    aligner.extend_gap_score = GAP_EXTEND
     if is_global:
         aligner.left_gap_score = GLOBAL_GAP_SCORE
         aligner.right_gap_score = GLOBAL_GAP_SCORE
@@ -231,14 +273,14 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
         # if len(query_protein_list) < 1:
         #     continue
 
-        score_max_gene = get_aligned_score(aligner, matrix, total_protein, total_protein, is_self=True)
+        score_max_gene, _ = get_aligned_score_str(aligner, matrix, total_protein, total_protein, is_self=True)
 
         for j, query_protein in enumerate(query_protein_list):
 
             if j < 1 and total_protein.name in query_protein_names_list:
                 total_protein.set_metadata("origin")
                 total_protein.set_distance(0)
-                total_protein.set_align_result(total_protein.seq + "\n" + total_protein.seq + "\n\n",
+                total_protein.set_align_result(total_protein.seq + "\n\n",
                                                score_max_gene, score_max_gene, total_protein.name)
                 break
 
@@ -247,8 +289,8 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
             else:
                 score_min = 0 * max(len(total_protein), len(query_protein))
 
-            score_max_query = get_aligned_score(aligner, matrix, query_protein, query_protein, is_self=True)
-            score_alignment, alignment_str = get_aligned_score(aligner, matrix, query_protein, total_protein)
+            score_max_query, _ = get_aligned_score_str(aligner, matrix, query_protein, query_protein, is_self=True)
+            score_alignment, alignment_str = get_aligned_score_str(aligner, matrix, query_protein, total_protein)
 
             distance = 1 - (score_alignment - score_min) / (score_max_query - score_min)
 

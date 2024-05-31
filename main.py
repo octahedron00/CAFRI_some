@@ -22,7 +22,7 @@ ALL_PROMOTER_FILE = 'data_genome/all_promoter.fasta'
 QUERY_PROTEIN_FILE = 'query.txt'
 ALL_RNA_SEQ_FILE_FOLDER = 'data_rna_seq/'
 
-VERSION = "1.04 b.2024.06.01"
+VERSION = "1.05 b.2024.06.01"
 
 
 def main():
@@ -69,18 +69,15 @@ def main():
     make_metadata_file(sorted_protein_list, config.target_list)
 
     align_by_clustalw()
-    time_3 = datetime.datetime.now()
 
     make_tree()
-    time_4 = datetime.datetime.now()
 
     make_treatmap_image_by_r()
-    time_5 = datetime.datetime.now()
 
 
 if __name__ == '__main__':
     # make_tree()
-    make_treatmap_image_by_r()
+    # make_treatmap_image_by_r()
 
     print(f"CAFRI-some ver. {VERSION}")
     main()

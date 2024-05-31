@@ -238,7 +238,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
                 total_protein.set_align_result(align_result=alignment_str, align_score=score_alignment,
                                                align_score_base=score_max_query, align_with=query_protein.name)
 
-            if distance > query_protein.distance:
+            if distance > (query_protein.distance + MAX_DIST):
                 break
 
         if total_protein.distance < 0.2:

@@ -22,7 +22,7 @@ ALL_PROMOTER_FILE = 'data_genome/all_promoter.fasta'
 QUERY_PROTEIN_FILE = 'query.txt'
 ALL_RNA_SEQ_FILE_FOLDER = 'data_rna_seq/'
 
-VERSION = "1.00 b.2024.05.31"
+VERSION = "1.01 b.2024.05.31"
 
 
 def main():

@@ -2,6 +2,9 @@
     "type": "json",
     "make_list_like_this": ["Gene1", "Gene2", "Gene3"],
 
+    "align_mode_explanation": "global for full sequence of protein; local for some part of it",
+    "align_mode": "global",
+
     "gene_query_explanation": "Genes in the genome to find its relative genes",
     "gene_query": [],
 

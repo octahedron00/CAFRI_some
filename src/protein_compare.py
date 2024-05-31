@@ -15,6 +15,8 @@ FILE_FOR_MULTIPLE_ALIGN = "temp/_align.fasta"
 
 BLOSUM62 = "src/blosum62/blosum62.txt"
 
+GLOBAL_GAP_SCORE = -0.5209
+
 
 def write_fasta(file_name: str, seq_map: dict):
 
@@ -93,7 +95,7 @@ class Protein:
             return self.gene_name
 
 
-def get_query_protein_list(target_name_list: list[str], all_protein_dict: dict, query_protein_dict: dict):
+def get_query_protein_list(target_name_list: list[str], all_protein_dict: dict, query_protein_dict: dict, is_global=True):
     query_protein_list = []
 
     for key in all_protein_dict.keys():
@@ -110,18 +112,22 @@ def get_query_protein_list(target_name_list: list[str], all_protein_dict: dict, 
         ext_protein = Protein(key=key, seq=query_protein_dict[key])
         query_protein_list.append(ext_protein)
 
-    return get_query_protein_list_with_distance(query_protein_list)
+    return get_query_protein_list_with_distance(query_protein_list, is_global)
 
 
-def get_query_protein_list_with_distance(query_protein_list: list[Protein]):
+def get_query_protein_list_with_distance(query_protein_list: list[Protein], is_global=True):
 
     query_protein_list_with_distance = []
 
     aligner = PairwiseAligner()
     aligner.open_gap_score = -7
     aligner.extend_gap_score = -4
-    aligner.left_gap_score = 0
-    aligner.right_gap_score = 0
+    if is_global:
+        aligner.left_gap_score = GLOBAL_GAP_SCORE
+        aligner.right_gap_score = GLOBAL_GAP_SCORE
+    else:
+        aligner.left_gap_score = 0
+        aligner.right_gap_score = 0
     matrix = substitution_matrices.read(BLOSUM62)
 
     for protein_1 in query_protein_list:
@@ -133,6 +139,10 @@ def get_query_protein_list_with_distance(query_protein_list: list[Protein]):
             if protein_1.seq == protein_2.seq:
                 continue
 
+            if is_global:
+                score_min = GLOBAL_GAP_SCORE * max(len(protein_1), len(protein_2))
+            else:
+                score_min = 0 * max(len(protein_1), len(protein_2))
             score_alignment, _ = get_aligned_score(aligner, matrix, protein_1, protein_2)
             distance = 1 - (score_alignment - score_min) / (score_max - score_min)
 
@@ -190,7 +200,7 @@ def get_aligned_score(aligner: PairwiseAligner, matrix, query_protein: Protein, 
 
 
 def get_similar_protein_list(query_protein_list: list[Protein], total_protein_list: list[Protein],
-                             add_list: list[str], ignore_list: list[str], max_distance=0.9, max_gene_amount=100):
+                             add_list: list[str], ignore_list: list[str], max_distance=0.9, max_gene_amount=100, is_global=True):
 
     MAX_DIST = max_distance
     MAX_GENE_AMOUNT = max_gene_amount
@@ -200,8 +210,12 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
     aligner = PairwiseAligner()
     aligner.open_gap_score = -7
     aligner.extend_gap_score = -4
-    aligner.left_gap_score = 0
-    aligner.right_gap_score = 0
+    if is_global:
+        aligner.left_gap_score = GLOBAL_GAP_SCORE
+        aligner.right_gap_score = GLOBAL_GAP_SCORE
+    else:
+        aligner.left_gap_score = 0
+        aligner.right_gap_score = 0
     matrix = substitution_matrices.read(BLOSUM62)
 
     query_protein_names_list = [query_protein.name for query_protein in query_protein_list]
@@ -228,7 +242,10 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
                                                score_max_gene, score_max_gene, total_protein.name)
                 break
 
-            score_min = 0 * min(len(total_protein), len(query_protein))
+            if is_global:
+                score_min = GLOBAL_GAP_SCORE * max(len(total_protein), len(query_protein))
+            else:
+                score_min = 0 * max(len(total_protein), len(query_protein))
 
             score_max_query = get_aligned_score(aligner, matrix, query_protein, query_protein, is_self=True)
             score_alignment, alignment_str = get_aligned_score(aligner, matrix, query_protein, total_protein)
@@ -261,7 +278,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
 
         total_protein_list[i] = total_protein
         time_now = datetime.datetime.now()
-        print(f"\r{i + 1}/{len(total_protein_list)} : {total_protein.distance:.03f} "
+        print(f"\r{i + 1}/{len(total_protein_list)} : {total_protein.distance:.03f}({total_protein.align_score:.02f}) "
               f"({time_now - time_start} passed / {((time_now - time_start) / (i + 1)) * (len(total_protein_list) - i - 1)} left)",
               end="")
 

@@ -22,7 +22,7 @@ ALL_PROMOTER_FILE = 'data_genome/all_promoter.fasta'
 QUERY_PROTEIN_FILE = 'query.txt'
 ALL_RNA_SEQ_FILE_FOLDER = 'data_rna_seq/'
 
-VERSION = "1.01 b.2024.05.31"
+VERSION = "1.03 b.2024.06.01"
 
 
 def main():
@@ -41,6 +41,8 @@ def main():
     logging.info(f"add {config.add_list}")
     logging.info(f"ignore {config.ignore_list}")
     logging.info(f"rna_seq files: {rna_seq_file_list}")
+    logging.info(f"columns selected: {config.column_list}")
+    logging.info(f"global align: {config.is_global}")
 
     all_protein_dict = read_fasta(ALL_PROTEIN_FILE)
     all_gene_dict = read_fasta(ALL_GENE_FILE)
@@ -49,11 +51,14 @@ def main():
 
     query_protein_dict = read_fasta(QUERY_PROTEIN_FILE)
 
-    target_protein_list = get_query_protein_list(config.target_list, all_protein_dict, query_protein_dict)
+    target_protein_list = get_query_protein_list(config.target_list, all_protein_dict, query_protein_dict,
+                                                 is_global=config.is_global)
     total_protein_list = get_total_protein_list(all_protein_dict, all_gene_dict, all_cds_dict, all_promoter_dict,
                                                 query_protein_dict)
 
-    sorted_protein_list = get_similar_protein_list(target_protein_list, total_protein_list, config.add_list, config.ignore_list, config.max_distance, config.max_gene_amount)
+    sorted_protein_list = get_similar_protein_list(target_protein_list, total_protein_list, config.add_list,
+                                                   config.ignore_list, config.max_distance, config.max_gene_amount,
+                                                   is_global=config.is_global)
     logging.info(f"finished")
     logging.info(f"{len(sorted_protein_list)} found")
 

@@ -108,29 +108,21 @@ def make_tree():
     calculator = DistanceCalculator('blosum62')
     constructor = DistanceTreeConstructor()
 
-    # distance_matrix = calculator.get_distance(multiple_align)
+    distance_matrix = calculator.get_distance(multiple_align)
 
-    # tree = constructor.nj(distance_matrix)
+    tree = constructor.nj(distance_matrix)
 
-    # trees = []
-    # for i in range(BOOTSTRAP):
-    #     print(f"\rmaking tree... {i+1:>3d}/{BOOTSTRAP}", end="")
-    #     tree_one_list = bootstrap_trees(multiple_align, 1, constructor)
-    #     trees.append(next(tree_one_list))
+    print(tree)
 
-    # consensus_tree = majority_consensus(trees=trees)
+    Phylo.write(tree, os.path.join(DIR_VARIABLE, "tree.xml"), 'phyloxml')
+    Phylo.write(tree, os.path.join(DIR_VARIABLE, "_tree.dnd"), 'newick')
 
-    # print(tree)
-
-    # Phylo.write(consensus_tree, "var\\tree.xml", 'phyloxml')
-    # Phylo.write(tree, "var\\_tree.dnd", 'newick')
-
-    command = f"{os.path.join(DIR_SRC, 'fasttree', 'FastTree.exe')} " \
-              f"{os.path.join(DIR_VARIABLE, '_align.phy')} > {os.path.join(DIR_VARIABLE, '_tree.dnd')}"
-
-    logging.info(f"command: {command}")
-    result = subprocess.run(command, shell=True)
-    logging.info(f"error: {result.stderr}")
+    # command = f"{os.path.join(DIR_SRC, 'fasttree', 'FastTree.exe')} -mlacc 2 -slownni " \
+    #           f"{os.path.join(DIR_VARIABLE, '_align.phy')} > {os.path.join(DIR_VARIABLE, '_tree.dnd')}"
+    #
+    # logging.info(f"command: {command}")
+    # result = subprocess.run(command, shell=True)
+    # logging.info(f"error: {result.stderr}")
 
 
 def make_treatmap_image_by_r():

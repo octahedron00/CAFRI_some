@@ -34,7 +34,7 @@ def main():
             return
 
     target_list = []
-    add_list = ["Vp1G00010"]
+    add_list = []
     ignore_list = []
     column_list = []
     rna_seq_file_list = [os.path.join(ALL_RNA_SEQ_FILE_FOLDER, file) for file in os.listdir(ALL_RNA_SEQ_FILE_FOLDER)

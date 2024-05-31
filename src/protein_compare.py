@@ -1,10 +1,9 @@
 import datetime
+import logging
 import math
 import os
 
 from Bio.Align import PairwiseAligner, substitution_matrices
-
-MAX_DIST = 0.9
 
 COMPARED_PROTEIN_FILE = "result/compared_protein.fasta"
 COMPARED_GENE_FILE = "result/compared_gene.fasta"
@@ -187,7 +186,10 @@ def get_aligned_score(aligner: PairwiseAligner, matrix, query_protein: Protein, 
 
 
 def get_similar_protein_list(query_protein_list: list[Protein], total_protein_list: list[Protein],
-                             add_list: list[str], ignore_list: list[str]):
+                             add_list: list[str], ignore_list: list[str], max_distance=0.9, max_gene_amount=100):
+
+    MAX_DIST = max_distance
+    MAX_GENE_AMOUNT = max_gene_amount
 
     time_start = datetime.datetime.now()
 
@@ -239,6 +241,10 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
             if distance > query_protein.distance:
                 break
 
+        if total_protein.distance < 0.2:
+            print()
+            logging.info(f"Found identical-ish: {total_protein.name} ({total_protein.distance}; {total_protein.seq})")
+
         if total_protein.name in add_list or total_protein.gene_name in add_list:
             # print("add", total_protein.name, total_protein.gene_name)
             if total_protein.metadata.find('align') > -1:
@@ -258,7 +264,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
     sorted_protein_list = sorted(total_protein_list)
 
     sorted_protein_list = [protein for protein in sorted_protein_list if protein.distance < MAX_DIST]
-    sorted_protein_list = sorted_protein_list[:min(len(sorted_protein_list), 100)]
+    sorted_protein_list = sorted_protein_list[:min(len(sorted_protein_list), MAX_GENE_AMOUNT)]
 
     compared_protein_dict = {f"{protein.name} {protein.metadata} ({protein.distance:.6f})": protein.seq
                              for protein in sorted_protein_list}

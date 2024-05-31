@@ -95,7 +95,7 @@ plot <- new_gheatmap(p_tree, df, width = (ncol(df) * COL_W) / (nrow(df) * TREE_W
 
 # + scale_x_ggtree()
 
-plot <- plot + scale_fill_viridis(option="viridis", discrete=FALSE)
+plot <- plot + scale_fill_viridis(option="viridis", discrete=FALSE) + guides(fill = guide_colourbar(title = "log(TPM+1)"))
 
 # 300 dpi, inch unit is working...
 # +1 for the ending

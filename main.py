@@ -22,7 +22,7 @@ ALL_PROMOTER_FILE = 'data_genome/all_promoter.fasta'
 QUERY_PROTEIN_FILE = 'query.txt'
 ALL_RNA_SEQ_FILE_FOLDER = 'data_rna_seq/'
 
-VERSION = "1.03 b.2024.06.01"
+VERSION = "1.04 b.2024.06.01"
 
 
 def main():
@@ -80,7 +80,7 @@ def main():
 
 if __name__ == '__main__':
     # make_tree()
-    # make_treatmap_image_by_r()
+    make_treatmap_image_by_r()
 
     print(f"CAFRI-some ver. {VERSION}")
     main()

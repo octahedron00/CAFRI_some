@@ -72,7 +72,7 @@ class Protein:
     def __init__(self, key: str, seq: str, is_external=False):
 
         self.name = key
-        self.seq = seq.upper()
+        self.seq = seq.upper().replace('*', '')
         self.gene_seq = ""
         self.cds_seq = ""
         self.promoter_seq = ""
@@ -219,6 +219,7 @@ def get_aligned_score_str(aligner: PairwiseAligner, matrix, query_protein: Prote
         return score, query_protein.seq + "\n\n"
 
     # print(query_protein.seq, target_protein.seq)
+    # print(query_protein, target_protein)
     alignments = aligner.align(query_protein.seq, target_protein.seq)
 
     alignment = alignments[0]
@@ -262,6 +263,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
         aligner.left_gap_score = 0
         aligner.right_gap_score = 0
     matrix = substitution_matrices.Array(data=protein_matrices['blosum62'])
+    aligner.substitution_matrix = matrix
 
     query_protein_names_list = [query_protein.name for query_protein in query_protein_list]
 

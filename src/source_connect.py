@@ -9,8 +9,8 @@ import pandas as pd
 
 from src.protein_compare import Protein
 from Bio import Phylo, SeqIO, AlignIO
-from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
-from src.blosum62.protein_matrices import protein_matrices, DistanceCalculator
+from Bio.Align import substitution_matrices
+from src.blosum62.protein_matrices import DistanceCalculator, DistanceTreeConstructor, protein_matrices
 
 
 DATAFRAME_FILE = "temp/_df.csv"
@@ -106,7 +106,7 @@ def make_tree():
     multiple_align = AlignIO.read(os.path.join(DIR_VARIABLE, '_align.aln'), "clustal")
     AlignIO.write(multiple_align, os.path.join(DIR_VARIABLE, '_align.phy'), 'phylip-relaxed')
 
-    calculator = DistanceCalculator(model_address=BLOSUM62)
+    calculator = DistanceCalculator(model=substitution_matrices.Array(data=protein_matrices['blosum62']))
     constructor = DistanceTreeConstructor()
 
     distance_matrix = calculator.get_distance(multiple_align)

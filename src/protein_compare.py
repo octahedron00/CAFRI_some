@@ -4,6 +4,7 @@ import math
 import os
 
 from Bio.Align import PairwiseAligner, substitution_matrices
+from src.blosum62.protein_matrices import protein_matrices
 
 COMPARED_PROTEIN_FILE = "result/compared_protein.fasta"
 COMPARED_GENE_FILE = "result/compared_gene.fasta"
@@ -154,7 +155,7 @@ def get_query_protein_list_with_distance(query_protein_list: list[Protein], is_g
     else:
         aligner.left_gap_score = 0
         aligner.right_gap_score = 0
-    matrix = substitution_matrices.read(BLOSUM62)
+    matrix = substitution_matrices.Array(data=protein_matrices['blosum62'])
 
     for protein_1 in query_protein_list:
         protein_1.set_distance(0)
@@ -212,6 +213,8 @@ def get_aligned_score_str(aligner: PairwiseAligner, matrix, query_protein: Prote
     if is_self:
         score = 0
         for s in query_protein.seq:
+            if s == '*':
+                continue
             score += matrix[s, s]
         return score, query_protein.seq + "\n\n"
 
@@ -258,7 +261,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
     else:
         aligner.left_gap_score = 0
         aligner.right_gap_score = 0
-    matrix = substitution_matrices.read(BLOSUM62)
+    matrix = substitution_matrices.Array(data=protein_matrices['blosum62'])
 
     query_protein_names_list = [query_protein.name for query_protein in query_protein_list]
 
@@ -320,7 +323,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
 
         total_protein_list[i] = total_protein
         time_now = datetime.datetime.now()
-        print(f"\r{i + 1}/{len(total_protein_list)} : {total_protein.distance:.03f}({total_protein.align_score:.02f}) "
+        print(f"\r{i + 1}/{len(total_protein_list)} : {total_protein.distance:.03f} "
               f"({time_now - time_start} passed / {((time_now - time_start) / (i + 1)) * (len(total_protein_list) - i - 1)} left)",
               end="")
 

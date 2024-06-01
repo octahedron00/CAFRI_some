@@ -9,12 +9,14 @@ import pandas as pd
 
 from src.protein_compare import Protein
 from Bio import Phylo, SeqIO, AlignIO
-from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
-from Bio.Align import PairwiseAligner, substitution_matrices
+from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
+from src.blosum62.protein_matrices import protein_matrices, DistanceCalculator
 
 
 DATAFRAME_FILE = "temp/_df.csv"
 METADATA_FILE = "temp/_md.csv"
+
+BLOSUM62 = "src/blosum62/blosum62.txt"
 
 DIR_SRC = "src"
 DIR_VARIABLE = "temp"
@@ -103,9 +105,8 @@ def align_by_clustalw():
 def make_tree():
     multiple_align = AlignIO.read(os.path.join(DIR_VARIABLE, '_align.aln'), "clustal")
     AlignIO.write(multiple_align, os.path.join(DIR_VARIABLE, '_align.phy'), 'phylip-relaxed')
-    # AlignIO.PhylipIO.RelaxedPhylipWriter.write_alignment()
 
-    calculator = DistanceCalculator('blosum62')
+    calculator = DistanceCalculator(model_address=BLOSUM62)
     constructor = DistanceTreeConstructor()
 
     distance_matrix = calculator.get_distance(multiple_align)
@@ -119,7 +120,7 @@ def make_tree():
 
     # command = f"{os.path.join(DIR_SRC, 'fasttree', 'FastTree.exe')} -mlacc 2 -slownni " \
     #           f"{os.path.join(DIR_VARIABLE, '_align.phy')} > {os.path.join(DIR_VARIABLE, '_tree.dnd')}"
-    #
+
     # logging.info(f"command: {command}")
     # result = subprocess.run(command, shell=True)
     # logging.info(f"error: {result.stderr}")

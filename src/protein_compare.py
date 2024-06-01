@@ -176,7 +176,7 @@ def get_query_protein_list_with_distance(query_protein_list: list[Protein], is_g
             if distance > protein_1.distance:
                 protein_1.set_distance(distance)
 
-        logging.info(f"{protein_1.name}\t{protein_1.distance:.03f}")
+        logging.info(f"max distance between query for {protein_1.name}:\t{protein_1.distance:.03f}")
         query_protein_list_with_distance.append(protein_1)
     return query_protein_list_with_distance
 

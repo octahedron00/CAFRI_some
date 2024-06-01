@@ -15,7 +15,7 @@ ALL_GENE_FILE = 'data_genome/all_gene.fasta'
 ALL_CDS_FILE = 'data_genome/all_cds.fasta'
 ALL_PROMOTER_FILE = 'data_genome/all_promoter.fasta'
 
-DATA_GENOME = 'data_genome/'
+DATA_GENOME = 'data_genome'
 
 PROMOTER_LENGTH = 2000
 

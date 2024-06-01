@@ -134,8 +134,8 @@ def get_query_protein_list(target_name_list: list[str], all_protein_dict: dict, 
                 protein = Protein(key=key, seq=all_protein_dict[key])
                 query_protein_list.append(protein)
 
+    logging.info(f"external_target: {[key for key in query_protein_dict.keys()]}")
     for key in query_protein_dict.keys():
-        print(key)
         ext_protein = Protein(key=key, seq=query_protein_dict[key])
         query_protein_list.append(ext_protein)
 
@@ -175,8 +175,8 @@ def get_query_protein_list_with_distance(query_protein_list: list[Protein], is_g
 
             if distance > protein_1.distance:
                 protein_1.set_distance(distance)
-                print(distance)
 
+        logging.info(f"{protein_1.name}\t{protein_1.distance:.03f}")
         query_protein_list_with_distance.append(protein_1)
     return query_protein_list_with_distance
 
@@ -218,8 +218,6 @@ def get_aligned_score_str(aligner: PairwiseAligner, matrix, query_protein: Prote
             score += matrix[s, s]
         return score, query_protein.seq + "\n\n"
 
-    # print(query_protein.seq, target_protein.seq)
-    # print(query_protein, target_protein)
     alignments = aligner.align(query_protein.seq, target_protein.seq)
 
     alignment = alignments[0]
@@ -314,7 +312,6 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
             logging.info(f"Found identical-ish: {total_protein.name} ({total_protein.distance}; {total_protein.seq})")
 
         if total_protein.name in add_list or total_protein.gene_name in add_list:
-            # print("add", total_protein.name, total_protein.gene_name)
             if total_protein.metadata.find('align') > -1:
                 total_protein.metadata = "align+add"
             else:
@@ -325,9 +322,10 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
 
         total_protein_list[i] = total_protein
         time_now = datetime.datetime.now()
-        print(f"\r{i + 1}/{len(total_protein_list)} : {total_protein.distance:.03f} "
-              f"({time_now - time_start} passed / {((time_now - time_start) / (i + 1)) * (len(total_protein_list) - i - 1)} left)",
-              end="")
+        if i%100 == 99:
+            print(f"\r{i + 1}/{len(total_protein_list)} : {total_protein.distance:.03f} "
+                  f"({time_now - time_start} passed / {((time_now - time_start) / (i + 1)) * (len(total_protein_list) - i - 1)} left)",
+                  end="")
 
     sorted_protein_list = sorted(total_protein_list)
 

@@ -7,19 +7,19 @@ import subprocess
 import numpy
 import pandas as pd
 
-from src.protein_compare import Protein
+from _src.protein_compare import Protein
 from Bio import Phylo, SeqIO, AlignIO
 from Bio.Align import substitution_matrices
-from src.blosum62.protein_matrices import DistanceCalculator, DistanceTreeConstructor, protein_matrices
+from _src.blosum62.protein_matrices import DistanceCalculator, DistanceTreeConstructor, protein_matrices
 
 
-DATAFRAME_FILE = "temp/_df.csv"
-METADATA_FILE = "temp/_md.csv"
+DATAFRAME_FILE = "_temp/_df.csv"
+METADATA_FILE = "_temp/_md.csv"
 
-BLOSUM62 = "src/blosum62/blosum62.txt"
+BLOSUM62 = "_src/blosum62/blosum62.txt"
 
-DIR_SRC = "src"
-DIR_VARIABLE = "temp"
+DIR_SRC = "_src"
+DIR_VARIABLE = "_temp"
 
 IS_LOG = True
 
@@ -136,8 +136,8 @@ def make_treatmap_image_by_r():
 
 
 if __name__ == '__main__':
-    DIR_SRC = "..\\src"
-    DIR_VARIABLE = "..\\temp"
+    DIR_SRC = ""
+    DIR_VARIABLE = "../_temp"
     align_by_clustalw()
     make_tree()
     make_treatmap_image_by_r()

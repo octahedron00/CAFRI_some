@@ -4,7 +4,7 @@ import math
 import os
 
 from Bio.Align import PairwiseAligner, substitution_matrices
-from src.blosum62.protein_matrices import protein_matrices
+from _src.blosum62.protein_matrices import protein_matrices
 
 COMPARED_PROTEIN_FILE = "result/compared_protein.fasta"
 COMPARED_GENE_FILE = "result/compared_gene.fasta"
@@ -12,9 +12,9 @@ COMPARED_CDS_FILE = "result/compared_cds.fasta"
 COMPARED_PROMOTER_FILE = "result/compared_promoter.fasta"
 COMPARED_PROMOTER_GENE_FILE = "result/compared_promoter+gene.fasta"
 COMPARED_RESULT_FILE = "result/compared_result.fasta"
-FILE_FOR_MULTIPLE_ALIGN = "temp/_align.fasta"
+FILE_FOR_MULTIPLE_ALIGN = "_temp/_align.fasta"
 
-BLOSUM62 = "src/blosum62/blosum62.txt"
+BLOSUM62 = "_src/blosum62/blosum62.txt"
 
 GLOBAL_GAP_SCORE = -0.5209
 GAP_OPEN = -4
@@ -309,7 +309,7 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
 
         if total_protein.distance < 0.2:
             print()
-            logging.info(f"Found identical-ish: {total_protein.name} ({total_protein.distance}; {total_protein.seq})")
+            logging.info(f"Found identical-ish: {total_protein.name} ({total_protein.distance:.03f}; {total_protein.seq})")
 
         if total_protein.name in add_list or total_protein.gene_name in add_list:
             if total_protein.metadata.find('align') > -1:

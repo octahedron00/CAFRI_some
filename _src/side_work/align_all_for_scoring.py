@@ -26,7 +26,7 @@ N_DATA = 1000
 
 DIR_DATA = "data"
 DIR_VARIABLE = "var"
-DIR_SRC = "src"
+DIR_SRC = "_src"
 
 TASK_TITLE = str(datetime.datetime.now())[5:-10]
 TASK_TITLE = "".join([c for c in TASK_TITLE if c not in "\/:*?<>| -"])

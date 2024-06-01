@@ -153,7 +153,7 @@ Report bugs at <https://bugs.R-project.org>."
 ## The variables are basically the precious configure variables (with
 ## the R_* and MAIN_* ones removed), plus FLIBS and BLAS_LIBS.
 ## One could use
-##   precious_configure_vars=`~/src/R/configure --help \
+##   precious_configure_vars=`~/_src/R/configure --help \
 ##     | sed -n '/^Some influential/,/^[^ ]/p' \
 ##     | sed '/^[^ ]/d' \
 ##     | sed 's/^  //' \

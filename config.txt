@@ -9,7 +9,7 @@
     "gene_query": [],
 
     "gene_add_explanation": "Genes in the genome to add in the heatmap and tree",
-    "gene_add": ["Vp10G04250", "Vp10G04260", "Vp10G04290", "Vp10G04300"],
+    "gene_add": [],
 
     "gene_ignore_explanation": "Genes in the genome to ignore by making the heatmap and tree",
     "gene_ignore": [],
@@ -21,7 +21,7 @@
     "max_distance": 0.95,
 
     "max_gene_amount_explanation": "Amount threshold of genes to show; more than 50 can make the software too slow in multiple alignment step",
-    "max_gene_amount": 70,
+    "max_gene_amount": 61,
 
     "End_of_file": true
 }

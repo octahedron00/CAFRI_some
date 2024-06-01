@@ -5,7 +5,6 @@ import json
 CONFIG_FILE = "config.txt"
 
 
-
 class Config:
     is_global = True
     target_list = []

@@ -7,10 +7,10 @@ import datetime
 
 from Bio import SeqIO, Seq
 
-from src.genome_digest import check_existing_genome_digest, try_genome_digest, read_fasta
-from src.protein_compare import get_query_protein_list, get_total_protein_list, get_similar_protein_list
-from src.source_connect import make_dataframe_file, make_metadata_file, align_by_clustalw, make_tree, make_treatmap_image_by_r
-from src.config import Config, read_config
+from _src.genome_digest import check_existing_genome_digest, try_genome_digest, read_fasta
+from _src.protein_compare import get_query_protein_list, get_total_protein_list, get_similar_protein_list
+from _src.source_connect import make_dataframe_file, make_metadata_file, align_by_clustalw, make_tree, make_treatmap_image_by_r
+from _src.config import Config, read_config
 
 logging.basicConfig(format='%(asctime)s / %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -22,7 +22,7 @@ ALL_PROMOTER_FILE = 'data_genome/all_promoter.fasta'
 QUERY_PROTEIN_FILE = 'query.txt'
 ALL_RNA_SEQ_FILE_FOLDER = 'data_rna_seq'
 
-VERSION = "1.10 b.2024.06.01"
+VERSION = "1.10 b.2024.06.02"
 
 
 def main():

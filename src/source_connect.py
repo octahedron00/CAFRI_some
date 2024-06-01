@@ -111,7 +111,7 @@ def make_tree():
 
     distance_matrix = calculator.get_distance(multiple_align)
 
-    tree = constructor.nj(distance_matrix)
+    tree = constructor.upgma(distance_matrix)
 
     print(tree)
 

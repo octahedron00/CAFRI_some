@@ -92,14 +92,14 @@ def try_genome_digest():
     file_annotation = ''
 
     list_all = os.listdir(DATA_GENOME)
-    list_files = [file for file in list_all if os.path.isfile(DATA_GENOME + file)]
+    list_files = [file for file in list_all if os.path.isfile(os.path.join(DATA_GENOME, file))]
     for file in list_files:
         if file.find('gff') > -1:
-            file_annotation = DATA_GENOME + file
+            file_annotation = os.path.join(DATA_GENOME, file)
         elif (file.find('md') > -1) or (file.find('all_') > -1):
             continue
         elif file.find('fa') > -1 or file.find('fna') > -1:
-            file_genome = DATA_GENOME + file
+            file_genome = os.path.join(DATA_GENOME, file)
 
     if len(file_genome) < 1:
         logging.warning('No genome file (fasta form) was found; quitting...')

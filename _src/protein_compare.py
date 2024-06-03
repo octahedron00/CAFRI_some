@@ -11,7 +11,7 @@ COMPARED_GENE_FILE = "result/compared_gene.fasta"
 COMPARED_CDS_FILE = "result/compared_cds.fasta"
 COMPARED_PROMOTER_FILE = "result/compared_promoter.fasta"
 COMPARED_PROMOTER_GENE_FILE = "result/compared_promoter+gene.fasta"
-COMPARED_RESULT_FILE = "result/compared_result.fasta"
+COMPARED_RESULT_FILE = "result/compared_alignment.fasta"
 FILE_FOR_MULTIPLE_ALIGN = "_temp/_align.fasta"
 
 BLOSUM62 = "_src/blosum62/blosum62.txt"
@@ -188,7 +188,7 @@ def get_total_protein_list(all_protein_dict: dict, all_gene_dict: dict, all_cds_
     for key in sorted(list(all_protein_dict.keys())):
         protein = Protein(key=key, seq=all_protein_dict[key])
 
-        if int(key[key.find(".") + 1:]) > 1:
+        if int(key[key.find(".") + 1:].replace('t', '')) > 1:
             protein.set_isoform()
 
             previous_protein = total_protein_list[-1]

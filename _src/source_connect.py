@@ -126,7 +126,7 @@ def make_tree():
     # logging.info(f"error: {result.stderr}")
 
 
-def make_treatmap_image_by_r(folder:str):
+def make_treatmap_image_by_r(folder: str):
     command = f"{os.path.join(DIR_SRC, 'compact_R', 'bin', 'Rscript.exe')} " \
               f"{os.path.join(DIR_SRC, 'R_script', 'draw_tree.R')}"
 
@@ -137,11 +137,9 @@ def make_treatmap_image_by_r(folder:str):
     os.replace("result.png", os.path.join(folder, "result.png"))
 
 
-
-
 if __name__ == '__main__':
     DIR_SRC = ""
     DIR_VARIABLE = "../_temp"
     align_by_clustalw()
     make_tree()
-    make_treatmap_image_by_r()
+    make_treatmap_image_by_r("result")

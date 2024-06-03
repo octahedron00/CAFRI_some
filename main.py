@@ -37,7 +37,7 @@ def main():
         if not try_genome_digest():
             return
 
-    result_folder_name = "".join([c for c in TASK_TITLE if c not in "\/:*?<>| -"])
+    result_folder_name = "result_" + "".join([c for c in TASK_TITLE if c not in "\/:*?<>| -"])
     config = read_config()
     rna_seq_file_list = [os.path.join(ALL_RNA_SEQ_FILE_FOLDER, file) for file in os.listdir(ALL_RNA_SEQ_FILE_FOLDER)
                          if os.path.isfile(os.path.join(ALL_RNA_SEQ_FILE_FOLDER, file))]

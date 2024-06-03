@@ -24,7 +24,7 @@ QUERY_PROTEIN_FILE = 'query.txt'
 CONFIG_FILE = "config.txt"
 ALL_RNA_SEQ_FILE_FOLDER = 'data_rna_seq'
 
-VERSION = "1.11 b.2024.06.02"
+VERSION = "1.12 b.2024.06.03"
 
 TASK_TITLE = "task " + str(datetime.datetime.now())[5:-10]
 

@@ -244,7 +244,8 @@ def get_alignment_str(matrix, alignment_1: str, alignment_2: str):
 
 
 def get_similar_protein_list(query_protein_list: list[Protein], total_protein_list: list[Protein],
-                             add_list: list[str], ignore_list: list[str], max_distance=0.9, max_gene_amount=100, is_global=True):
+                             add_list: list[str], ignore_list: list[str], max_distance=0.9, max_gene_amount=100,
+                             is_global=True, folder="result"):
 
     MAX_DIST = max_distance
     MAX_GENE_AMOUNT = max_gene_amount
@@ -348,11 +349,11 @@ def get_similar_protein_list(query_protein_list: list[Protein], total_protein_li
     compared_protein_for_multiple_align_dict = {protein.get_best_name(): protein.seq for protein in sorted_protein_list}
 
     write_fasta(FILE_FOR_MULTIPLE_ALIGN, compared_protein_for_multiple_align_dict)
-    write_fasta(COMPARED_PROTEIN_FILE, compared_protein_dict)
-    write_fasta(COMPARED_GENE_FILE, compared_gene_dict)
-    write_fasta(COMPARED_CDS_FILE, compared_cds_dict)
-    write_fasta(COMPARED_PROMOTER_FILE, compared_promoter_dict)
-    write_fasta(COMPARED_PROMOTER_GENE_FILE, compared_promoter_gene_dict)
-    write_fasta(COMPARED_RESULT_FILE, compared_result_dict)
+    write_fasta(COMPARED_PROTEIN_FILE.replace("result", folder), compared_protein_dict)
+    write_fasta(COMPARED_GENE_FILE.replace("result", folder), compared_gene_dict)
+    write_fasta(COMPARED_CDS_FILE.replace("result", folder), compared_cds_dict)
+    write_fasta(COMPARED_PROMOTER_FILE.replace("result", folder), compared_promoter_dict)
+    write_fasta(COMPARED_PROMOTER_GENE_FILE.replace("result", folder), compared_promoter_gene_dict)
+    write_fasta(COMPARED_RESULT_FILE.replace("result", folder), compared_result_dict)
 
     return sorted_protein_list

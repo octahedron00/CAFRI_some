@@ -26,11 +26,11 @@ library(treeio)
 library(reshape2)
 library(viridis)
 
-source("src\\R_script\\gheatmap_custom.R")
+source("_src\\R_script\\gheatmap_custom.R")
 
-tree_file <- "temp\\_tree.dnd"
-df_file <- "temp\\_df.csv"
-md_file <- "temp\\_md.csv"
+tree_file <- "_temp\\_tree.dnd"
+df_file <- "_temp\\_df.csv"
+md_file <- "_temp\\_md.csv"
 
 
 COL_W = 0.7

@@ -4,6 +4,7 @@ import os
 import logging
 import csv
 import datetime
+import shutil
 
 from Bio import SeqIO, Seq
 
@@ -20,9 +21,12 @@ ALL_CDS_FILE = 'data_genome/all_cds.fasta'
 ALL_PROMOTER_FILE = 'data_genome/all_promoter.fasta'
 
 QUERY_PROTEIN_FILE = 'query.txt'
+CONFIG_FILE = "config.txt"
 ALL_RNA_SEQ_FILE_FOLDER = 'data_rna_seq'
 
-VERSION = "1.10 b.2024.06.02"
+VERSION = "1.11 b.2024.06.02"
+
+TASK_TITLE = "task " + str(datetime.datetime.now())[5:-10]
 
 
 def main():
@@ -33,9 +37,14 @@ def main():
         if not try_genome_digest():
             return
 
+    result_folder_name = "".join([c for c in TASK_TITLE if c not in "\/:*?<>| -"])
     config = read_config()
     rna_seq_file_list = [os.path.join(ALL_RNA_SEQ_FILE_FOLDER, file) for file in os.listdir(ALL_RNA_SEQ_FILE_FOLDER)
                          if os.path.isfile(os.path.join(ALL_RNA_SEQ_FILE_FOLDER, file))]
+
+    os.mkdir(result_folder_name)
+    shutil.copyfile(CONFIG_FILE, os.path.join(result_folder_name, CONFIG_FILE))
+    shutil.copyfile(QUERY_PROTEIN_FILE, os.path.join(result_folder_name, QUERY_PROTEIN_FILE))
 
     logging.info(f"target {config.target_list}")
     logging.info(f"add {config.add_list}")
@@ -58,7 +67,7 @@ def main():
 
     sorted_protein_list = get_similar_protein_list(target_protein_list, total_protein_list, config.add_list,
                                                    config.ignore_list, config.max_distance, config.max_gene_amount,
-                                                   is_global=config.is_global)
+                                                   is_global=config.is_global, folder=result_folder_name)
     logging.info(f"finished")
     logging.info(f"{len(sorted_protein_list)} found")
 
@@ -72,7 +81,7 @@ def main():
 
     make_tree()
 
-    make_treatmap_image_by_r()
+    make_treatmap_image_by_r(result_folder_name)
 
 
 if __name__ == '__main__':
